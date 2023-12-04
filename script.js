@@ -1,102 +1,127 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const questionContainer = document.getElementById("question-container");
-  const questionElement = document.getElementById("question");
-  const answerButtons = document.getElementById("answer-buttons");
-  const nextButton = document.getElementById("next-btn");
-  const restartButton = document.getElementById("restart-btn");
-  const resultDiv = document.getElementById("result");
+  // Quiz class encapsulates quiz-related functionality
+  class Quiz {
+    // Constructor initializes DOM elements and sets up event listeners
+    constructor() {
+      this.questionContainer = document.getElementById("question-container");
+      this.questionElement = document.getElementById("question");
+      this.answerButtons = document.getElementById("answer-buttons");
+      this.nextButton = document.getElementById("next-btn");
+      this.restartButton = document.getElementById("restart-btn");
+      this.resultDiv = document.getElementById("result");
 
-  let shuffledQuestions, currentQuestionIndex, score;
+      this.shuffledQuestions = [];
+      this.currentQuestionIndex = 0;
+      this.score = 0;
 
-  startQuiz();
-
-  function startQuiz() {
-    score = 0;
-    questionContainer.style.display = "block";
-    shuffledQuestions = shuffle(quizQuestions);
-    currentQuestionIndex = 0;
-    nextButton.classList.remove("hide");
-    restartButton.classList.add("hide");
-    resultDiv.classList.add("hide");
-    setNextQuestion();
-  }
-
-  function setNextQuestion() {
-    resetState();
-    showQuestion(shuffledQuestions[currentQuestionIndex]);
-  }
-
-  function showQuestion(question) {
-    questionElement.innerText = question.question;
-    question.options.forEach((option) => {
-      const button = document.createElement("button");
-      button.classList.add("btn");
-      button.textContent = option.text;
-      button.addEventListener("click", () => selectAnswer(option));
-      answerButtons.appendChild(button);
-    });
-  }
-
-  function resetState() {
-    while (answerButtons.firstChild) {
-      answerButtons.removeChild(answerButtons.firstChild);
-    }
-    nextButton.classList.add("hide");
-    resultDiv.classList.add("hide");
-    answerButtons.classList.remove("disable-click");
-  }
-
-  function selectAnswer(selectedOption) {
-    const question = shuffledQuestions[currentQuestionIndex];
-    const correct = selectedOption.correct;
-
-    if (correct) {
-      score++;
+      // Event listeners are set up in the constructor
+      this.nextButton.addEventListener("click", () => this.nextQuestion());
+      this.restartButton.addEventListener("click", () => this.startQuiz());
     }
 
-    answerButtons.classList.add("disable-click");
-    showCorrectAnswer(question, selectedOption);
+    // Method to start the quiz
+    startQuiz() {
+      this.score = 0;
+      this.questionContainer.style.display = "block";
+      this.shuffledQuestions = this.shuffle(quizQuestions);
+      this.currentQuestionIndex = 0;
+      this.nextButton.classList.remove("hide");
+      this.restartButton.classList.add("hide");
+      this.resultDiv.classList.add("hide");
+      this.setNextQuestion();
+    }
 
-    currentQuestionIndex++;
-    if (currentQuestionIndex < shuffledQuestions.length) {
-      setTimeout(setNextQuestion, 2000);
-    } else {
-      setTimeout(endQuiz, 2000);
+    // Method to set up the next question
+    setNextQuestion() {
+      this.resetState();
+      this.showQuestion(this.shuffledQuestions[this.currentQuestionIndex]);
+    }
+
+    // Method to display a question
+    showQuestion(question) {
+      this.questionElement.innerText = question.question;
+      question.options.forEach((option) => {
+        const button = document.createElement("button");
+        button.classList.add("btn");
+        button.textContent = option.text;
+        button.addEventListener("click", () => this.selectAnswer(option));
+        this.answerButtons.appendChild(button);
+      });
+    }
+
+    // Method to reset the state between questions
+    resetState() {
+      while (this.answerButtons.firstChild) {
+        this.answerButtons.removeChild(this.answerButtons.firstChild);
+      }
+      this.nextButton.classList.add("hide");
+      this.resultDiv.classList.add("hide");
+      this.answerButtons.classList.remove("disable-click");
+    }
+
+    // Method to handle the selection of an answer
+    selectAnswer(selectedOption) {
+      const question = this.shuffledQuestions[this.currentQuestionIndex];
+      const correct = selectedOption.correct;
+
+      if (correct) {
+        this.score++;
+      }
+
+      this.answerButtons.classList.add("disable-click");
+      this.showCorrectAnswer(question, selectedOption);
+
+      this.currentQuestionIndex++;
+      if (this.currentQuestionIndex < this.shuffledQuestions.length) {
+        setTimeout(() => this.setNextQuestion(), 2000);
+      } else {
+        setTimeout(() => this.endQuiz(), 2000);
+      }
+    }
+
+    // Method to show the correct answer and update the result
+    showCorrectAnswer(question, selectedOption) {
+      const correctIndex = question.options.findIndex(
+        (option) => option.correct
+      );
+      this.answerButtons.children[correctIndex].classList.add("correct");
+
+      if (selectedOption.correct) {
+        this.resultDiv.innerText = "Correct!";
+        this.resultDiv.classList.add("correct");
+      } else {
+        this.resultDiv.innerText = "Incorrect!";
+        this.resultDiv.classList.add("incorrect");
+      }
+
+      this.resultDiv.classList.remove("hide");
+      this.restartButton.classList.add("hide");
+      this.nextButton.classList.add("hide");
+    }
+
+    // Method to end the quiz
+    endQuiz() {
+      this.questionContainer.style.display = "none";
+      this.resultDiv.classList.remove("hide");
+      this.resultDiv.innerText = `Your final score: ${this.score} / ${this.shuffledQuestions.length}`;
+      this.restartButton.classList.remove("hide");
+    }
+
+    // Method to shuffle an array (used for randomizing questions)
+    shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    // Method called when the next button is clicked to reset the state
+    nextQuestion() {
+      this.answerButtons.classList.remove("disable-click");
+      this.resultDiv.classList.add("hide");
     }
   }
 
-  function showCorrectAnswer(question, selectedOption) {
-    const correctIndex = question.options.findIndex((option) => option.correct);
-    answerButtons.children[correctIndex].classList.add("correct");
+  // Create an instance of the Quiz class
+  const quiz = new Quiz();
 
-    if (selectedOption.correct) {
-      resultDiv.innerText = "Correct!";
-      resultDiv.classList.add("correct");
-    } else {
-      resultDiv.innerText = "Incorrect!";
-      resultDiv.classList.add("incorrect");
-    }
-
-    resultDiv.classList.remove("hide");
-    restartButton.classList.add("hide");
-    nextButton.classList.add("hide");
-  }
-
-  function endQuiz() {
-    questionContainer.style.display = "none";
-    resultDiv.classList.remove("hide");
-    resultDiv.innerText = `Your final score: ${score} / ${shuffledQuestions.length}`;
-    restartButton.classList.remove("hide");
-  }
-
-  function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
-  }
-
-  nextButton.addEventListener("click", () => {
-    answerButtons.classList.remove("disable-click");
-    resultDiv.classList.add("hide");
-  });
-
-  restartButton.addEventListener("click", startQuiz);
+  // Start the quiz when the DOM is loaded
+  quiz.startQuiz();
 });
