@@ -44,6 +44,45 @@ const questions = [
       { text: "<scripting>", correct: false },
     ],
   },
+      {
+    question: "Which tag defines the head of a document?",
+    answers: [
+      { text: "<title>", correct: false },
+      { text: "<head>", correct: true },
+      { text: "<body>", correct: false },
+      { text: "<header>", correct: false },
+    ],
+  },
+
+  {
+    question: "What is the correct way to link an external stylesheet?",
+    answers: [
+      { text: `<link href="style.css" rel="stylesheet">`, correct: true },
+      { text: `<style src="style.css"></style>`, correct: false },
+      { text: `<import href="style.css">`, correct: false },
+      { text: `<style link ="style.css" rel="stylesheet">`, correct: false },
+    ],
+  },
+
+  {
+    question: "What property sets the spacing between elements?",
+    answers: [
+      { text: "margin", correct: true },
+      { text: "padding", correct: false },
+      { text: "space", correct: false },
+      { text: "border", correct: false },
+    ],
+  },
+
+  {
+    question: "How do you center an element horizontally?",
+    answers: [
+      { text: "text-align: center;", correct: true },
+      { text: "align: center;", correct: false },
+      { text: "margin: auto;", correct: false },
+      { text: "center: true", correct: false },
+    ],
+  }
 ];
 
 startQuiz();
