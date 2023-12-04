@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded", function () {
   const questionContainer = document.getElementById("question-container");
   const questionElement = document.getElementById("question");
