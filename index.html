@@ -9,6 +9,13 @@
 </head>
 
 <body>
+  <!-- background -->
+
+<div class="background-container">
+<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/moon2.png" alt="">
+<div class="stars"></div>
+<div class="twinkling"></div>
+<div class="clouds"></div></div>
   <div class="quiz-container">
     <div id="question-container">
       <h3 id="question">Question</h3>
@@ -17,7 +24,7 @@
     <button id="next-btn" class="btn hide">Next</button>
     <div id="result" class="hide"></div>
     <canvas id="confetti"></canvas>
-    <button id="restart-btn" class="btn hide">Restart</button>
+    <button id="restart-btn" class="btn hide" onclick="window.location.reload()">Restart</button>
   </div>
 
   <script src="script.js"></script>
